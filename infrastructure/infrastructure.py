@@ -102,16 +102,16 @@ class DatabaseIMPL(Database):
     def insert(self, table_name: str, data: SQLTableData):
         column_names = ''
         column_values = ''
-        for tData in data.data:
+        for t_data in data.data:
             comma = ','
-            if data.data.index(tData) == (len(data.data)-1):
+            if data.data.index(t_data) == (len(data.data)-1):
                 comma = ''
-            column_names += ' {} {}'.format(tData.name, comma)
+            column_names += ' {} {}'.format(t_data.name, comma)
             val = None
-            if(tData.type == SQLDataType.text):
-                val = '"{}"'.format(tData.data)
+            if(t_data.type == SQLDataType.text):
+                val = '"{}"'.format(t_data.data)
             else:
-                val = tData.data
+                val = t_data.data
             column_values += ' {} {}'.format(val, comma)
 
         query = '''

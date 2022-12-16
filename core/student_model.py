@@ -1,4 +1,4 @@
-from infrastructure import Column, SQLDataType, DataColumn, SQLDataType
+from infrastructure.infrastructure import Column, SQLDataType, DataColumn, SQLDataType
 import numpy as np
 
 

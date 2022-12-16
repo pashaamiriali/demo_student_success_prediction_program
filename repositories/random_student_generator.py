@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from student_model import StudentModel
+from core.student_model import StudentModel
 import random
 
 #! Important values in hypothetical premise (for success)

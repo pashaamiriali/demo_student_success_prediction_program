@@ -1,6 +1,6 @@
 from abc import ABC, abstractclassmethod
-from student_model import StudentModel
-from infrastructure import Database
+from core.student_model import StudentModel
+from infrastructure.infrastructure import Database
 
 
 class StudentRepository(ABC):

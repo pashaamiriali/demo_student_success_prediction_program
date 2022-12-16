@@ -1,8 +1,9 @@
-from infrastructure import DatabaseIMPL
-from repositories import StudentRepositoryIMPL
-from network import Network
-from random_student_generator import RandomStudentGeneratorIMPL
-from command_center import CommandOperator, CommandCenterIMPL
+from infrastructure.infrastructure import DatabaseIMPL
+from repositories.student_repository import StudentRepositoryIMPL
+from core.network import Network
+from repositories.random_student_generator import RandomStudentGeneratorIMPL
+from presentation.command_center import CommandCenterIMPL
+from presentation.command_operator import CommandOperator
 import numpy as np
 
 
@@ -62,7 +63,7 @@ def run_neural_network():
         np.array([i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, ])))
 
 
-if __name__ == "__main__":
+def main():
     initialize()
     rs = RandomStudentGeneratorIMPL()
     fs = rs.generateRandomStudents(2)
@@ -70,3 +71,7 @@ if __name__ == "__main__":
     # for s in fs:
     #     print(s)
     # run_neural_network()
+
+
+if __name__ == "__main__":
+    main()
