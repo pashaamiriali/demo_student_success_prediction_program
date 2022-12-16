@@ -1,12 +1,12 @@
 from abc import ABC, abstractclassmethod
 from core.student_model import StudentModel
-from infrastructure.infrastructure import Database
+from infrastructure.infrastructure import Database, SQLTableData
 
 
 class StudentRepository(ABC):
     
     @abstractclassmethod
-    def saveStudentToDb(self, student: StudentModel):
+    def saveStudentToDb(self, student: StudentModel) -> int:  # type: ignore
         pass
 
     @abstractclassmethod
@@ -35,16 +35,17 @@ class StudentRepositoryIMPL(StudentRepository):
         super().__init__()
         self.database = database
 
-    def saveStudentToDb(self, student: StudentModel):
+    def saveStudentToDb(self, student: StudentModel)->int:
         number_of_rows_found = len(self.database.find(
             StudentModel.table_name, student.id).fetchall())
         if(number_of_rows_found > 0):
             self.database.update(StudentModel.table_name,
-                                 student.to_data_columns, student.id)
+                                 SQLTableData(student.to_data_columns()), student.id)
+            return student.id
         else:
-            self.database.insert(StudentModel.table_name,
-                                 student.to_data_columns,)
-
+            lastrowid=self.database.insert(StudentModel.table_name,
+                                 SQLTableData(student.to_data_columns()),)
+            return lastrowid
     def findAllStudents(self) -> list[StudentModel]:
         data = self.database.read(StudentModel.table_name).fetchall()
         return_items = []

@@ -13,23 +13,29 @@ class CommandOperator():
         command = str(input('NC> ')).lower()
         if(command == 'exit' or command == 'q'):
             self.command_center.exit()
-
+            return
         elif(command == 'help' or command == 'h'):
             self.show_help()
         elif(command == 'reset database'):
             self.__reset_database()
-        elif (command== 'create new student'):
+        elif (command == 'create new student'):
             self.__create_new_student()
-        
-        elif (command== 'show current student'):
+
+        elif (command == 'show current student'):
             self.__show_current_student()
-        
+
+        elif (command=='remove current student'):
+            self.__remove_current_student()
+
+        elif (command=='save current student'):
+            self.__save_current_student()
+
         else:
             print("No such command found.")
             print('Type "help" or "h" to see instructions for using the program.')
 
         self.listen_for_command()
-        
+
     def show_help(self):
         Help().show_help()
 
@@ -40,9 +46,15 @@ class CommandOperator():
             self.command_center.reset_database()
             print('Database reset done.')
             exit()
-            
+
     def __create_new_student(self):
         self.command_center.create_new_student()
 
     def __show_current_student(self):
         self.command_center.show_current_student()
+
+    def __remove_current_student(self):
+        self.command_center.remove_current_student()
+
+    def __save_current_student(self):
+        self.command_center.save_current_student()

@@ -32,7 +32,7 @@ class StudentModel():
 
     def to_data_columns(self) -> list[DataColumn]:
         return [
-            DataColumn('name', self.name, SQLDataType.real),
+            DataColumn('name', self.name, SQLDataType.text),
             DataColumn('primary_school_grade',
                        self.primary_school_grade, SQLDataType.real),
             DataColumn('elementary_school_grade',

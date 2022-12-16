@@ -27,6 +27,10 @@ class CommandCenter(ABC):
         pass
 
     @abstractmethod
+    def save_current_student(self):
+        pass
+
+    @abstractmethod
     def predict_current_student_success(self):
         pass
 
@@ -116,10 +120,22 @@ class CommandCenterIMPL(CommandCenter):
             print('Currently no student is stored in memory.')
 
     def remove_current_student(self):
-        pass
+        if(self.current_student != None):
+            confirm = str(input(
+                "Remove the current student? Type Y for yes or N for no")).lower()
+            if(confirm != 'y'):
+                return
+            self.current_student = None
+        else:
+            print('Currently no student is stored in memory.')
 
-    def edit_current_student(self):
-        pass
+    def save_current_student(self):
+        if(self.current_student != None):
+            lastrowid = self.students_repo.saveStudentToDb(
+                self.current_student)
+            print("The student status is saved with the following id: \n {}".format(lastrowid))
+        else:
+            print('Currently no student is stored in memory.')
 
     def predict_current_student_success(self):
         pass

@@ -41,7 +41,7 @@ class Database(ABC):
         pass
 
     @abstractclassmethod
-    def insert(self, table_name: str, data):
+    def insert(self, table_name: str, data) -> int:  # type: ignore
         pass
 
     @abstractclassmethod
@@ -99,7 +99,7 @@ class DatabaseIMPL(Database):
 
         self.__commit()
 
-    def insert(self, table_name: str, data: SQLTableData):
+    def insert(self, table_name: str, data: SQLTableData) -> int:
         column_names = ''
         column_values = ''
         for t_data in data.data:
@@ -114,16 +114,24 @@ class DatabaseIMPL(Database):
                 val = t_data.data
             column_values += ' {} {}'.format(val, comma)
 
+#!TODO:        here there should be a RETURNING ID statement to return the id 
         query = '''
         INSERT INTO {} ({}) VALUES ({});
         '''.format(table_name, column_names, column_values)
-        self.__db.execute(query)
+        lastrowid = self.__db.execute(query).lastrowid
         self.__commit()
+        #TODO: change this line so that the lastrowid is not static
+        lastrowid=0
+        if(lastrowid == None):
+            return 0
+        else:
+            return lastrowid
 
     def read(self, table_name: str) -> Cursor:
         query = '''
         SELECT * FROM {};
         '''.format(table_name)
+        self.__commit()
         return self.__db.execute(query)
 
     def update(self, table_name: str, data: SQLTableData, key: int):
@@ -158,7 +166,7 @@ class DatabaseIMPL(Database):
         query = '''
         SELECT * FROM {} WHERE ID={}
         '''.format(table_name, key)
-        print(query)
+        self.__commit()
         return self.__db.execute(query)
 
     def __commit(self):
