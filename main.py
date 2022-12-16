@@ -2,29 +2,36 @@ from infrastructure.infrastructure import DatabaseIMPL
 from repositories.student_repository import StudentRepositoryIMPL
 from core.network import Network
 from repositories.random_student_generator import RandomStudentGeneratorIMPL
+from repositories.network_repository import NetworkRepository
 from presentation.command_center import CommandCenterIMPL
 from presentation.command_operator import CommandOperator
 import numpy as np
 
 
-def initialize_database():
+def initialize_database() -> tuple:
     database = DatabaseIMPL('students_db.db')
-    repo = StudentRepositoryIMPL(database)
-    repo.createStudentsTable()
+    network_repo = NetworkRepository(database)
+    network_repo.create_network_table()
+
+    students_repo = StudentRepositoryIMPL(database)
+    students_repo.createStudentsTable()
+
+    return (network_repo, students_repo)
 
 
-def initialize_command_line():
-    cc = CommandCenterIMPL()
+def initialize_command_line(network_repo, students_repo):
+    cc = CommandCenterIMPL(network_repo, students_repo)
     CommandOperator(cc)
 
 
 def initialize():
-    initialize_database()
-    initialize_command_line()
+    result = initialize_database()
+    network_repo = result[0]
+    students_repo = result[1]
+    initialize_command_line(network_repo, students_repo)
 
 
 def run_neural_network():
-    # TODO: create a new network scheme
     neural_network = Network()
     print('Random synaptic weights:')
     print(neural_network.synaptic_weights)
@@ -65,8 +72,8 @@ def run_neural_network():
 
 def main():
     initialize()
-    rs = RandomStudentGeneratorIMPL()
-    fs = rs.generateRandomStudents(2)
+    # rs = RandomStudentGeneratorIMPL()
+    # fs = rs.generateRandomStudents(2)
 
     # for s in fs:
     #     print(s)

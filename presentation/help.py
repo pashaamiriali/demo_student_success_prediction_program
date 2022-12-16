@@ -1,5 +1,24 @@
 
 class Help():
+    @staticmethod
+    def show_welcome():
+        print("""
+Welcome to the the demo student success prediction program.
+This program uses a two layer neural network to demonstrate
+The use of such technology in the process of research in
+fields of humanities and education.
+the data in this program is fully fabricated and to a large
+extent random used only for demonstration purposes.
+There is a hypothetical premise that we hold to be true in the
+hypothetical world in which this program lives. The premise is:
+A student with high primary school grades and low parents education
+with high access to modern technology and high confidence will be
+successful a competency based education environment.
+
+              """)
+        print('Type "help" or "h" to see instructions for using the program.')
+        print('Type "exit" or "q" to end the program.')
+
     def show_help(self):
         print(self.help_text)
     help_text = """
