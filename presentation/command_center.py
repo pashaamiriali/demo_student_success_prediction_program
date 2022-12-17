@@ -25,6 +25,10 @@ class CommandCenter(ABC):
         pass
 
     @abstractmethod
+    def reset_network(self):
+        pass
+
+    @abstractmethod
     def create_new_student(self):
         pass
 
@@ -58,6 +62,10 @@ class CommandCenter(ABC):
 
     @abstractmethod
     def save_current_network_status(self, number_of_epochs: int):
+        pass
+
+    @abstractmethod
+    def show_relationships(self, ):
         pass
 
 
@@ -146,6 +154,9 @@ class CommandCenterIMPL(CommandCenter):
         self.network_repo.drop_network_table()
         self.students_repo.drop_students_table()
 
+    def reset_network(self):
+        self.network_repo.drop_network_table()
+
     def create_new_student(self):
         if self.current_student is not None:
             confirm = str(input(
@@ -215,17 +226,24 @@ class CommandCenterIMPL(CommandCenter):
         self.__show_synaptic_weights()
 
     def auto_train(self, number_of_students: int, number_of_epochs: int):
+        print('Training...')
         rand_students = self.random_student_generator.generate_successful_students(number_of_students)
+        self.__train_with_given_students(rand_students, number_of_epochs, 0.9)
+
+        # print('Training for failure...')
+        # rand_students = self.random_student_generator.generate_failure_students(number_of_students)
+        # self.__train_with_given_students(rand_students, number_of_epochs, 0.0)
+
+        self.__show_synaptic_weights()
+
+    def __train_with_given_students(self, rand_students, number_of_epochs, success_rate):
         prev_checkpoint = 0.0
         step = 0.1
         for i in range(len(rand_students)):
-            self.network.train(array([rand_students[i].to_list()]), array([0.9]), number_of_epochs)
+            self.network.train(array([rand_students[i].to_list()]), array([success_rate]), number_of_epochs)
             if i > (len(rand_students) * (prev_checkpoint + step)):
                 prev_checkpoint += step
                 print(f'{round(prev_checkpoint * 100)}% done.')
-
-        self.__show_synaptic_weights()
-        self.save_current_network_status(number_of_students * number_of_epochs)
 
     def save_current_network_status(self, number_of_epochs: int):
         self.network_repo.save_synaptic_weights(self.network.synaptic_weights, number_of_epochs)
@@ -256,3 +274,6 @@ class CommandCenterIMPL(CommandCenter):
             relations[8][0],
             relations[9][0],
         ))
+
+    def show_relationships(self):
+        self.__show_synaptic_weights()

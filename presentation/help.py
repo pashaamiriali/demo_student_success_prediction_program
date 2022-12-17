@@ -38,6 +38,9 @@ successful a competency based education environment.
        
         Command: reset database -> clears all saved data and resets the 
         program. It will ask for reassurance.
+        
+        Command: reset network -> clears all saved synaptic weights data
+        and will ask for reassurance.
        
         Command: create new student -> takes in the students' data and stores
         it in memory to perform operations on. 
@@ -72,10 +75,7 @@ successful a competency based education environment.
         will be passed. Then it will generate random students and will add train itself
         based on that data.
         
-        Command: think-> it will ask to whether take the current students' data or
-        a new student and predict if it will succeed or not. it will both give a 
-        message of succeed or failure and a number (between 0 and 1) that shows 
-        the chance of success.
-        
+        Command: show relationships -> Shows the relationship between the involved factors
+        and the success and failure of a student.
         
     """

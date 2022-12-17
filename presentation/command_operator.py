@@ -20,6 +20,8 @@ class CommandOperator:
             self.show_help()
         elif command == 'reset database':
             self.__reset_database()
+        elif command == 'reset network':
+            self.__reset_network()
         elif command == 'create new student':
             self.__create_new_student()
 
@@ -40,6 +42,8 @@ class CommandOperator:
             self.__train()
         elif command == 'auto train':
             self.__auto_train()
+        elif command == 'show relationships':
+            self.__show_relationships()
         else:
             print("No such command found.")
             print('Type "help" or "h" to see instructions for using the program.')
@@ -56,6 +60,14 @@ class CommandOperator:
         if reassurance == 'yes':
             self.command_center.reset_database()
             print('Database reset done.')
+            exit()
+
+    def __reset_network(self):
+        reassurance = str(input(
+            'all training data will be lost. to Continue type "Yes": ')).lower()
+        if reassurance == 'yes':
+            self.command_center.reset_network()
+            print('Network reset done.')
             exit()
 
     def show_database_status(self):
@@ -96,7 +108,7 @@ class CommandOperator:
         number_of_students = int(input('Number of students to generate: '))
         number_of_epochs = int(input('Number of epochs (training sessions): '))
         self.command_center.auto_train(number_of_students, number_of_epochs)
-        self.__save_network_results(number_of_epochs)
+        self.__save_network_results(number_of_epochs * number_of_students)
 
     def __save_network_results(self, number_of_epochs):
         save_results = str(
@@ -106,3 +118,6 @@ class CommandOperator:
         if save_results == 'y':
             self.command_center.save_current_network_status(number_of_epochs)
             print('New network status saved!')
+
+    def __show_relationships(self):
+        self.command_center.show_relationships()

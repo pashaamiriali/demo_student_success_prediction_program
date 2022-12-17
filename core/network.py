@@ -10,9 +10,12 @@ def sigmoid_derivative(x):
 
 
 class Network:
-    def __init__(self):
+    def __init__(self, saved_synapses):
         np.random.seed(1)
-        self.synaptic_weights = 2 * np.random.random((10, 1)) - 1
+        if saved_synapses is not None:
+            self.synaptic_weights = saved_synapses
+        else:
+            self.synaptic_weights = 2 * np.random.random((10, 1)) - 1
 
     def train(self, training_inputs, training_outputs, training_iterations):
         for _ in range(training_iterations):
@@ -29,4 +32,3 @@ class Network:
 
     def get_synaptic_weights(self):
         return np.array(self.synaptic_weights)
-

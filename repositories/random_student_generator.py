@@ -35,25 +35,25 @@ class RandomStudentGeneratorIMPL(RandomStudentGenerator):
             student = StudentModel(0,  # id
                                    str(random.uniform(0.0, 1.0)),  # name
                                    # primary_school_grade
-                                   random.uniform(0.8, 1.0),
+                                   1.0,
                                    # elementary_school_grade
-                                   random.uniform(0.0, 1.0),
+                                   random.uniform(0.0, 0.9),
                                    # high_school_grade
-                                   random.uniform(0.0, 1.0),
+                                   random.uniform(0.0, 0.9),
                                    # present_economic_status
-                                   random.uniform(0.0, 1.0),
+                                   1.0,
                                    # present_political_stress
-                                   random.uniform(0.0, 1.0),
+                                   0.0,
                                    # student_confidence
-                                   random.uniform(0.8, 1.0),
+                                   1.0,
                                    # parents_education
-                                   random.uniform(0.0, 0.4),
+                                   0.0,
                                    # number_of_family_members
-                                   random.uniform(0.0, 1.0),
+                                   random.uniform(0.0, 0.9),
                                    # respect_for_teacher
-                                   random.uniform(0.0, 1.0),
+                                   1.0,
                                    # access_to_modern_technology
-                                   random.uniform(0.8, 1.0),
+                                   1.0,
                                    )
             students.append(student)
         return students
