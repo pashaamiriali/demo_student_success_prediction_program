@@ -1,4 +1,4 @@
-from infrastructure.infrastructure import Database, Column, SQLDataType
+from infrastructure.infrastructure import Database, Column, SQLDataType, SQLTableData, DataColumn
 import numpy as np
 from core.exceptions import NetworkNotTrainedException
 
@@ -19,6 +19,7 @@ class NetworkRepository:
         self.__respect_for_teacher_to_success = 0
         self.__access_to_modern_technology_to_success = 0
         self.__total_number_of_training_sessions = 0
+
     table_name = 'network_weights'
 
     def load_from_database(self):
@@ -26,7 +27,7 @@ class NetworkRepository:
         if len(data) == 0:
             raise NetworkNotTrainedException("Program is not trained.")
         else:
-            last_instance = data[len(data)-1]
+            last_instance = data[len(data) - 1]
             self.__primary_school_grade_to_success = last_instance[0]
             self.__elementary_school_grade_to_success = last_instance[1]
             self.__high_school_grade_to_success = last_instance[2]
@@ -66,6 +67,7 @@ class NetworkRepository:
             Column('number_of_family_members_to_success', SQLDataType.real),
             Column('respect_for_teacher_to_success', SQLDataType.real),
             Column('access_to_modern_technology_to_success', SQLDataType.real),
+            Column('total_number_of_training_sessions', SQLDataType.int),
         ])
 
     def drop_network_table(self):
@@ -79,3 +81,19 @@ class NetworkRepository:
         for item in data:
             number_of_training_sessions += item[10]
         return number_of_training_sessions
+
+    def save_synaptic_weights(self, syn_weights: np.array, number_of_epochs: int):
+        data = SQLTableData([
+            DataColumn('primary_school_grade_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('elementary_school_grade_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('high_school_grade_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('present_economic_status_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('present_political_stress_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('student_confidence_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('parents_education_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('number_of_family_members_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('respect_for_teacher_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('access_to_modern_technology_to_success', syn_weights[0][0], SQLDataType.real),
+            DataColumn('total_number_of_training_sessions', number_of_epochs, SQLDataType.int),
+        ])
+        self.database.insert(NetworkRepository.table_name, data)

@@ -63,6 +63,9 @@ successful a competency based education environment.
         entering all of the students, you can enter the number of training
         sessions that the program should spend. then the training starts and after 
         it's done you can view the synaptic weights of each data to success and failure.
+        after the training process is done the program will ask you to either save the 
+        training results. 
+        
         
         Command: train auto -> this command will take in two numerical inputs for
         how many instances of data should be generated and how many will the training

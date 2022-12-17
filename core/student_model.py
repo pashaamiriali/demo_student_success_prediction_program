@@ -57,7 +57,12 @@ class StudentModel:
         ]
 
     def to_array(self):
-        return np.array([
+        return np.array(self.to_list())
+
+    table_name = 'students'
+
+    def to_list(self) -> list:
+        return [
             self.primary_school_grade,
             self.elementary_school_grade,
             self.high_school_grade,
@@ -68,9 +73,7 @@ class StudentModel:
             self.number_of_family_members,
             self.respect_for_teacher,
             self.access_to_modern_technology,
-        ])
-
-    table_name = 'students'
+        ]
 
     def __str__(self) -> str:
         return """

@@ -41,7 +41,7 @@ class Database(ABC):
         pass
 
     @abstractmethod
-    def insert(self, table_name: str, data) -> int:  # type: ignore
+    def insert(self, table_name: str, data:SQLTableData) -> int:  # type: ignore
         pass
 
     @abstractmethod

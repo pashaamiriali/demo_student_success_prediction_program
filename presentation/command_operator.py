@@ -1,4 +1,6 @@
-from presentation.command_center import CommandCenter
+from numpy import array
+
+from presentation.command_center import CommandCenter, get_student_from_input
 from presentation.help import Help
 
 
@@ -34,7 +36,8 @@ class CommandOperator:
 
         elif command == 'predict':
             self.__predict()
-
+        elif command == 'train':
+            self.__train()
         else:
             print("No such command found.")
             print('Type "help" or "h" to see instructions for using the program.')
@@ -73,3 +76,19 @@ class CommandOperator:
 
     def __predict(self):
         self.command_center.predict_current_student_success()
+
+    def __train(self):
+        number_of_students = int(input('Enter the number of students to train: '))
+        students = []
+        success_rates = []
+        for _ in range(number_of_students):
+            students.append(get_student_from_input().to_list())
+            success_rates.append(int(input('Enter the success status between 0 and 1: ')))
+        number_of_epochs = int(input('Enter the number of epochs (training sessions): '))
+        students = array(students)
+        success_rates = array(success_rates)
+        self.command_center.train(students, success_rates, number_of_epochs)
+        save_results = str(
+            input('Training done. Do you want to save the current network status? Type Y for yes and N for no: '))
+        if save_results.strip()=='y':
+            self.command_center.save_current_network_status(number_of_epochs)

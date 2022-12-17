@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+
+from numpy import array
+
 from repositories.network_repository import NetworkRepository
 from repositories.student_repository import StudentRepository
 from core.student_model import StudentModel
@@ -44,6 +47,12 @@ class CommandCenter(ABC):
     def predict_current_student_success(self):
         pass
 
+    @abstractmethod
+    def train(self, students: array, success_rates: array, number_of_epochs: int):
+        pass
+    @abstractmethod
+    def save_current_network_status(self, number_of_epochs: int):
+        pass
 
 def print_student(student: StudentModel):
     present_text = """
@@ -75,7 +84,39 @@ def print_student(student: StudentModel):
     print(present_text)
 
 
+def get_student_from_input() -> StudentModel:
+    name = str(input('Name: '))
+    primary_school_grade = float(str(input('Primary school grade: ')))
+    elementary_school_grade = float(
+        str(input('Elementary school grade: ')))
+    high_school_grade = float(str(input('High school grade: ')))
+    present_economic_status = float(
+        str(input('Present economic status: ')))
+    present_political_stress = float(
+        str(input('Present political stress: ')))
+    student_confidence = float(str(input('Student confidence: ')))
+    parents_education = float(str(input('Parents education: ')))
+    number_of_family_members = float(
+        str(input('Number of family members: ')))
+    respect_for_teacher = float(str(input('Respect for teacher: ')))
+    access_to_modern_technology = float(
+        str(input('Access to modern technology: ')))
+    return StudentModel(0, name,
+                        primary_school_grade,
+                        elementary_school_grade,
+                        high_school_grade,
+                        present_economic_status,
+                        present_political_stress,
+                        student_confidence,
+                        parents_education,
+                        number_of_family_members,
+                        respect_for_teacher,
+                        access_to_modern_technology,
+                        )
+
+
 class CommandCenterIMPL(CommandCenter):
+
     def __init__(self, network_repo: NetworkRepository, students_repo: StudentRepository, network: Network):
         self.current_student = None
         self.network_repo = network_repo
@@ -102,35 +143,7 @@ class CommandCenterIMPL(CommandCenter):
             if confirm != 'y':
                 return
 
-        name = str(input('Name: '))
-        primary_school_grade = float(str(input('Primary school grade: ')))
-        elementary_school_grade = float(
-            str(input('Elementary school grade: ')))
-        high_school_grade = float(str(input('High school grade: ')))
-        present_economic_status = float(
-            str(input('Present economic status: ')))
-        present_political_stress = float(
-            str(input('Present political stress: ')))
-        student_confidence = float(str(input('Student confidence: ')))
-        parents_education = float(str(input('Parents education: ')))
-        number_of_family_members = float(
-            str(input('Number of family members: ')))
-        respect_for_teacher = float(str(input('Respect for teacher: ')))
-        access_to_modern_technology = float(
-            str(input('Access to modern technology: ')))
-
-        self.current_student = StudentModel(0, name,
-                                            primary_school_grade,
-                                            elementary_school_grade,
-                                            high_school_grade,
-                                            present_economic_status,
-                                            present_political_stress,
-                                            student_confidence,
-                                            parents_education,
-                                            number_of_family_members,
-                                            respect_for_teacher,
-                                            access_to_modern_technology,
-                                            )
+        self.current_student = get_student_from_input()
         print('Current student is: {}'.format(self.current_student.name))
 
     def show_current_student(self):
@@ -185,3 +198,33 @@ class CommandCenterIMPL(CommandCenter):
             print(
                 'There is no student stored in memory.\n type "create new student" to store one; then run "predict" '
                 'to predict the state of the student.')
+
+    def train(self, students: array, success_rates: array, number_of_epochs: int):
+        self.network.train(students, success_rates, number_of_epochs)
+        relations = self.network.get_synaptic_weights()
+        print("""
+        This is what the network thinks about the relationship between each input and the students' outcome:
+        The effect of Primary school grade in success: {}
+        The effect of Elementary school grade in success: {}
+        The effect of High school grade in success: {}
+        The effect of Present economic status in success: {}
+        The effect of Present political stress in success: {}
+        The effect of Student confidence in success: {}
+        The effect of Parents education in success: {}
+        The effect of Number of family members in success: {}
+        The effect of Respect for teacher in success: {}
+        The effect of Access to modern technology in success: {}
+        """.format(
+            relations[0][0],
+            relations[1][0],
+            relations[2][0],
+            relations[3][0],
+            relations[4][0],
+            relations[5][0],
+            relations[6][0],
+            relations[7][0],
+            relations[8][0],
+            relations[9][0],
+        ))
+    def save_current_network_status(self, number_of_epochs: int):
+        self.network_repo.save_synaptic_weights(self.network.synaptic_weights, number_of_epochs)
