@@ -4,6 +4,7 @@ from numpy import array
 
 from repositories.network_repository import NetworkRepository
 from repositories.student_repository import StudentRepository
+from repositories.random_student_generator import RandomStudentGenerator
 from core.student_model import StudentModel
 from core.exceptions import NoStudentFoundException, NetworkNotTrainedException
 from core.network import Network
@@ -50,9 +51,15 @@ class CommandCenter(ABC):
     @abstractmethod
     def train(self, students: array, success_rates: array, number_of_epochs: int):
         pass
+
+    @abstractmethod
+    def auto_train(self, number_of_students: int, number_of_epochs: int):
+        pass
+
     @abstractmethod
     def save_current_network_status(self, number_of_epochs: int):
         pass
+
 
 def print_student(student: StudentModel):
     present_text = """
@@ -117,18 +124,21 @@ def get_student_from_input() -> StudentModel:
 
 class CommandCenterIMPL(CommandCenter):
 
-    def __init__(self, network_repo: NetworkRepository, students_repo: StudentRepository, network: Network):
+    def __init__(self, network_repo: NetworkRepository, students_repo: StudentRepository, network: Network,
+                 random_student_generator: RandomStudentGenerator):
         self.current_student = None
         self.network_repo = network_repo
         self.students_repo = students_repo
         self.network = network
+        self.random_student_generator = random_student_generator
 
     def exit(self):
         exit()
 
     def show_database_status(self):
         try:
-            self.network_repo.show_training_status()
+            total_epochs = self.network_repo.show_training_status()
+            print(f'Total number of epochs (training sessions): {total_epochs}')
         except NetworkNotTrainedException:
             print('Network is not trained. Start training now!')
 
@@ -201,6 +211,26 @@ class CommandCenterIMPL(CommandCenter):
 
     def train(self, students: array, success_rates: array, number_of_epochs: int):
         self.network.train(students, success_rates, number_of_epochs)
+
+        self.__show_synaptic_weights()
+
+    def auto_train(self, number_of_students: int, number_of_epochs: int):
+        rand_students = self.random_student_generator.generate_successful_students(number_of_students)
+        prev_checkpoint = 0.0
+        step = 0.1
+        for i in range(len(rand_students)):
+            self.network.train(array([rand_students[i].to_list()]), array([0.9]), number_of_epochs)
+            if i > (len(rand_students) * (prev_checkpoint + step)):
+                prev_checkpoint += step
+                print(f'{round(prev_checkpoint * 100)}% done.')
+
+        self.__show_synaptic_weights()
+        self.save_current_network_status(number_of_students * number_of_epochs)
+
+    def save_current_network_status(self, number_of_epochs: int):
+        self.network_repo.save_synaptic_weights(self.network.synaptic_weights, number_of_epochs)
+
+    def __show_synaptic_weights(self):
         relations = self.network.get_synaptic_weights()
         print("""
         This is what the network thinks about the relationship between each input and the students' outcome:
@@ -226,5 +256,3 @@ class CommandCenterIMPL(CommandCenter):
             relations[8][0],
             relations[9][0],
         ))
-    def save_current_network_status(self, number_of_epochs: int):
-        self.network_repo.save_synaptic_weights(self.network.synaptic_weights, number_of_epochs)

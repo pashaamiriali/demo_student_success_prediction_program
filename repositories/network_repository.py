@@ -79,7 +79,7 @@ class NetworkRepository:
             raise NetworkNotTrainedException('')
         number_of_training_sessions = 0
         for item in data:
-            number_of_training_sessions += item[10]
+            number_of_training_sessions += item[11]
         return number_of_training_sessions
 
     def save_synaptic_weights(self, syn_weights: np.array, number_of_epochs: int):

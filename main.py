@@ -5,6 +5,7 @@ from infrastructure.infrastructure import DatabaseIMPL
 from presentation.command_center import CommandCenterIMPL
 from presentation.command_operator import CommandOperator
 from repositories.network_repository import NetworkRepository
+from repositories.random_student_generator import RandomStudentGeneratorIMPL
 from repositories.student_repository import StudentRepositoryIMPL
 
 
@@ -21,7 +22,8 @@ def initialize_database() -> tuple:
 
 def initialize_command_line(network_repo, students_repo):
     network = Network()
-    cc = CommandCenterIMPL(network_repo, students_repo, network)
+    rand_student_gen = RandomStudentGeneratorIMPL()
+    cc = CommandCenterIMPL(network_repo, students_repo, network, rand_student_gen )
     CommandOperator(cc)
 
 

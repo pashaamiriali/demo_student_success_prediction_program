@@ -38,6 +38,8 @@ class CommandOperator:
             self.__predict()
         elif command == 'train':
             self.__train()
+        elif command == 'auto train':
+            self.__auto_train()
         else:
             print("No such command found.")
             print('Type "help" or "h" to see instructions for using the program.')
@@ -88,7 +90,19 @@ class CommandOperator:
         students = array(students)
         success_rates = array(success_rates)
         self.command_center.train(students, success_rates, number_of_epochs)
+        self.__save_network_results(number_of_epochs)
+
+    def __auto_train(self):
+        number_of_students = int(input('Number of students to generate: '))
+        number_of_epochs = int(input('Number of epochs (training sessions): '))
+        self.command_center.auto_train(number_of_students, number_of_epochs)
+        self.__save_network_results(number_of_epochs)
+
+    def __save_network_results(self, number_of_epochs):
         save_results = str(
-            input('Training done. Do you want to save the current network status? Type Y for yes and N for no: '))
-        if save_results.strip()=='y':
+            input(
+                'Training done. Do you want to save the current network status? Type Y for yes and N for no: ')) \
+            .lower().strip()
+        if save_results == 'y':
             self.command_center.save_current_network_status(number_of_epochs)
+            print('New network status saved!')

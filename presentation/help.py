@@ -68,8 +68,8 @@ successful a competency based education environment.
         
         
         Command: train auto -> this command will take in two numerical inputs for
-        how many instances of data should be generated and how many will the training
-        epochs be. Then it will generate random students and will add train itself
+        how many instances of data should be generated and how many training epochs 
+        will be passed. Then it will generate random students and will add train itself
         based on that data.
         
         Command: think-> it will ask to whether take the current students' data or
