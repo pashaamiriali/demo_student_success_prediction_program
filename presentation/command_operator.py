@@ -24,11 +24,13 @@ class CommandOperator():
         elif (command == 'show current student'):
             self.__show_current_student()
 
-        elif (command=='remove current student'):
+        elif (command == 'remove current student'):
             self.__remove_current_student()
 
-        elif (command=='save current student'):
+        elif (command == 'save current student'):
             self.__save_current_student()
+        elif (command == 'find student'):
+            self.__find_student()
 
         else:
             print("No such command found.")
@@ -41,7 +43,7 @@ class CommandOperator():
 
     def __reset_database(self):
         reassurance = str(input(
-            'all training data and students information will be lost. to Continue type "Yes">')).lower()
+            'all training data and students information will be lost. to Continue type "Yes": ')).lower()
         if (reassurance == 'yes'):
             self.command_center.reset_database()
             print('Database reset done.')
@@ -58,3 +60,6 @@ class CommandOperator():
 
     def __save_current_student(self):
         self.command_center.save_current_student()
+
+    def __find_student(self):
+        self.command_center.find_student(int(str(input('Enter student ID: '))))

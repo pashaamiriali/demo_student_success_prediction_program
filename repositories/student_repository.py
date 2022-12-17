@@ -1,6 +1,7 @@
 from abc import ABC, abstractclassmethod
 from core.student_model import StudentModel
 from infrastructure.infrastructure import Database, SQLTableData
+from core.exceptions import NoStudentFoundException
 
 
 class StudentRepository(ABC):
@@ -68,6 +69,8 @@ class StudentRepositoryIMPL(StudentRepository):
 
     def findSingleStudent(self, key: int) -> StudentModel:
         data = self.database.read(StudentModel.table_name).fetchall()
+        if(len(data)<1):
+            raise NoStudentFoundException('')
         item = data[0]
         return StudentModel(
             item[0],
