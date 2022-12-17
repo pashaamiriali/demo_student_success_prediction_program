@@ -12,7 +12,7 @@ def initialize_database() -> tuple:
     database = DatabaseIMPL('students_db.db')
     network_repo = NetworkRepository(database)
     network_repo.create_network_table()
-
+    
     students_repo = StudentRepositoryIMPL(database)
     students_repo.createStudentsTable()
 

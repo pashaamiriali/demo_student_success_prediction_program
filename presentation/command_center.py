@@ -2,13 +2,17 @@ from abc import ABC, abstractmethod
 from repositories.network_repository import NetworkRepository
 from repositories.student_repository import StudentRepository
 from core.student_model import StudentModel
-from core.exceptions import NoStudentFoundException
+from core.exceptions import NoStudentFoundException, NetworkNotTrainedException
 
 
 class CommandCenter(ABC):
 
     @abstractmethod
     def exit(self):
+        pass
+
+    @abstractmethod
+    def show_database_status(self):
         pass
 
     @abstractmethod
@@ -48,6 +52,13 @@ class CommandCenterIMPL(CommandCenter):
 
     def exit(self):
         exit()
+
+    def show_database_status(self):
+        try:
+            self.network_repo.show_training_status()
+        except NetworkNotTrainedException:
+            print('Network is not trained. Start training now!')
+
 
     def reset_database(self):
         self.network_repo.drop_network_table()
@@ -122,8 +133,8 @@ class CommandCenterIMPL(CommandCenter):
             self.__print_student(student)
             to_store = str(input(
                 'Store to memory? (existing student will be replaced) Type Y for yes and N for no: ')).lower()
-            if(to_store=="y"):
-                self.current_student=student
+            if(to_store == "y"):
+                self.current_student = student
                 print('Current student is: {}'.format(
                     self.current_student.name))
         except NoStudentFoundException:

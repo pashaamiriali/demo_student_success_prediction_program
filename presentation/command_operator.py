@@ -7,8 +7,9 @@ class CommandOperator():
     def __init__(self, command_center: CommandCenter):
         self.command_center = command_center
         Help.show_welcome()
+        self.show_database_status()
         self.listen_for_command()
-
+        
     def listen_for_command(self):
         command = str(input('NC> ')).lower()
         if(command == 'exit' or command == 'q'):
@@ -48,7 +49,8 @@ class CommandOperator():
             self.command_center.reset_database()
             print('Database reset done.')
             exit()
-
+    def show_database_status(self):
+        self.command_center.show_database_status()
     def __create_new_student(self):
         self.command_center.create_new_student()
 
