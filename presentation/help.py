@@ -53,7 +53,7 @@ successful a competency based education environment.
         Command: find student -> tries to find a student with the given id and
         store it memory as the current student.
        
-        Command: predict current student success -> predicts the students' 
+        Command: predict -> predicts the students' 
         success or failure and gives you a number between 0 and 1 that 
         shows the chance for the given students' success or failure.
       

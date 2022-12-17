@@ -68,7 +68,7 @@ class StudentRepositoryIMPL(StudentRepository):
         return return_items
 
     def findSingleStudent(self, key: int) -> StudentModel:
-        data = self.database.read(StudentModel.table_name).fetchall()
+        data = self.database.find(StudentModel.table_name, key).fetchall()
         if(len(data)<1):
             raise NoStudentFoundException('')
         item = data[0]

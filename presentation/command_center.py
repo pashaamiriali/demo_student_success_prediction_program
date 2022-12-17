@@ -3,6 +3,7 @@ from repositories.network_repository import NetworkRepository
 from repositories.student_repository import StudentRepository
 from core.student_model import StudentModel
 from core.exceptions import NoStudentFoundException, NetworkNotTrainedException
+from core.network import Network
 
 
 class CommandCenter(ABC):
@@ -45,10 +46,11 @@ class CommandCenter(ABC):
 
 
 class CommandCenterIMPL(CommandCenter):
-    def __init__(self, network_repo: NetworkRepository, students_repo: StudentRepository, ):
+    def __init__(self, network_repo: NetworkRepository, students_repo: StudentRepository, network: Network):
         self.current_student = None
         self.network_repo = network_repo
         self.students_repo = students_repo
+        self.network = network
 
     def exit(self):
         exit()
@@ -58,7 +60,6 @@ class CommandCenterIMPL(CommandCenter):
             self.network_repo.show_training_status()
         except NetworkNotTrainedException:
             print('Network is not trained. Start training now!')
-
 
     def reset_database(self):
         self.network_repo.drop_network_table()
@@ -141,7 +142,17 @@ class CommandCenterIMPL(CommandCenter):
             print("No student with this ID is found.")
 
     def predict_current_student_success(self):
-        pass
+        if(type(self.current_student) is StudentModel):
+            chance_of_success = self.network.think(
+                self.current_student.to_array())[0]
+            if(chance_of_success > 0.5):
+                print("This student will succeed with {}% chance.".format(
+                    (chance_of_success*100)))
+            else:
+                print("This student will fail because it has {}% chance in success".format(
+                    (chance_of_success*100)))
+        else:
+            print('There is no student stored in memory.\n type "create new student" to store one; then run "predict" to predict the state of the student.')
 
     def __print_student(self, student: StudentModel):
         present_text = """

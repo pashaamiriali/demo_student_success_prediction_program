@@ -4,7 +4,7 @@ import numpy as np
 class Network():
     def __init__(self):
         np.random.seed(1)
-        self.synaptic_weights =2*np.random.random((10, 1))-1
+        self.synaptic_weights = 2*np.random.random((10, 1))-1
 
     def sigmoid(self, x):
         return 1/(1+np.exp(-x))
@@ -24,4 +24,3 @@ class Network():
         inputs = inputs.astype(float)
         output = self.sigmoid(np.dot(inputs, self.synaptic_weights))
         return output
-

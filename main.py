@@ -20,7 +20,8 @@ def initialize_database() -> tuple:
 
 
 def initialize_command_line(network_repo, students_repo):
-    cc = CommandCenterIMPL(network_repo, students_repo)
+    network=Network()
+    cc = CommandCenterIMPL(network_repo, students_repo, network)
     CommandOperator(cc)
 
 
