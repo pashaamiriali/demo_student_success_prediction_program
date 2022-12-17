@@ -1,4 +1,4 @@
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
 import sqlite3 as sql
 from sqlite3 import Cursor
 import enum
@@ -13,50 +13,50 @@ class SQLDataType(enum.Enum):
     n_real = "REAL"
 
 
-class Column():
-    def __init__(self, name: str, type: SQLDataType):
+class Column:
+    def __init__(self, name: str, data_type: SQLDataType):
         self.name = name
-        self.type = type
+        self.type = data_type
 
 
-class DataColumn():
-    def __init__(self, name: str, data, type: SQLDataType):
+class DataColumn:
+    def __init__(self, name: str, data, data_type: SQLDataType):
         self.name = name
         self.data = data
-        self.type = type
+        self.type = data_type
 
 
-class SQLTableData():
+class SQLTableData:
     def __init__(self, data: list[DataColumn]) -> None:
         self.data = data
 
 
 class Database(ABC):
-    @abstractclassmethod
+    @abstractmethod
     def create_table(self, name: str, columns: list):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def drop_table(self, name: str):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def insert(self, table_name: str, data) -> int:  # type: ignore
         pass
 
-    @abstractclassmethod
-    def read(self, table_name: str,) -> Cursor:  # type: ignore
+    @abstractmethod
+    def read(self, table_name: str, ) -> Cursor:  # type: ignore
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def update(self, table_name: str, data: list[DataColumn], key: int):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def delete(self, table_name: str, key: int):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def find(self, table_name: str, key: int) -> Cursor:  # type: ignore
         pass
 
@@ -77,7 +77,7 @@ class DatabaseIMPL(Database):
         columns_in_text = ''
         for column in columns:
             comma = ','
-            if columns.index(column) == (len(columns)-1):
+            if columns.index(column) == (len(columns) - 1):
                 comma = ''
             columns_in_text += '{} {}{}'.format(column.name,
                                                 column.type.value, comma)
@@ -104,25 +104,24 @@ class DatabaseIMPL(Database):
         column_values = ''
         for t_data in data.data:
             comma = ','
-            if data.data.index(t_data) == (len(data.data)-1):
+            if data.data.index(t_data) == (len(data.data) - 1):
                 comma = ''
             column_names += ' {} {}'.format(t_data.name, comma)
-            val = None
-            if(t_data.type == SQLDataType.text):
+            if t_data.type == SQLDataType.text:
                 val = '"{}"'.format(t_data.data)
             else:
                 val = t_data.data
             column_values += ' {} {}'.format(val, comma)
 
-#!TODO:        here there should be a RETURNING ID statement to return the id 
+        # !TODO:        here there should be a RETURNING ID statement to return the id
         query = '''
         INSERT INTO {} ({}) VALUES ({});
         '''.format(table_name, column_names, column_values)
-        lastrowid = self.__db.execute(query).lastrowid
+        self.__db.execute(query)
         self.__commit()
-        #TODO: change this line so that the lastrowid is not static
-        lastrowid=0
-        if(lastrowid == None):
+        # TODO: change this line so that the lastrowid is not static
+        lastrowid = 0
+        if lastrowid is None:
             return 0
         else:
             return lastrowid
@@ -138,11 +137,10 @@ class DatabaseIMPL(Database):
         columns_and_values = ''
         for t_data in data.data:
             comma = ','
-            if data.data.index(t_data) == (len(data.data)-1):
+            if data.data.index(t_data) == (len(data.data) - 1):
                 comma = ''
 
-            val = None
-            if(t_data.type == SQLDataType.text):
+            if t_data.type == SQLDataType.text:
                 val = '"{}"'.format(t_data.data)
             else:
                 val = t_data.data

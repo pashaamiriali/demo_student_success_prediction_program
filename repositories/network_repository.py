@@ -3,7 +3,7 @@ import numpy as np
 from core.exceptions import NetworkNotTrainedException
 
 
-class NetworkRepository():
+class NetworkRepository:
     def __init__(self, database: Database):
         self.database = database
         self.synaptic_weights = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
@@ -73,7 +73,7 @@ class NetworkRepository():
 
     def show_training_status(self) -> int:
         data = self.database.read(NetworkRepository.table_name).fetchall()
-        if(len(data) < 1):
+        if len(data) < 1:
             raise NetworkNotTrainedException('')
         number_of_training_sessions = 0
         for item in data:

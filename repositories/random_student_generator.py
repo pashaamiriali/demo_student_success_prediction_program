@@ -2,35 +2,36 @@ from abc import ABC, abstractmethod
 from core.student_model import StudentModel
 import random
 
-#! Important values in hypothetical premise (for success)
+
+# ! Important values in hypothetical premise (for success)
 # High primary schools grade (0.8-1.0)
 # Low parents education (0.0-0.4)
 # High access to modern technology (0.8-1.0)
 # High confidence (0.8-1.0)
-#! reverse for failure
+# ! reverse for failure
 
 
 class RandomStudentGenerator(ABC):
     @abstractmethod
-    def generateSuccessfulStudents(self, count:int) -> list[StudentModel]:
+    def generate_successful_students(self, count: int) -> list[StudentModel]:
         pass
 
     @abstractmethod
-    def generateFailureStudents(self, count:int) -> list[StudentModel]:
+    def generate_failure_students(self, count: int) -> list[StudentModel]:
         pass
 
     @abstractmethod
-    def generateRandomStudents(self, count:int) -> list[StudentModel]:
+    def generate_random_students(self, count: int) -> list[StudentModel]:
         pass
 
 
 class RandomStudentGeneratorIMPL(RandomStudentGenerator):
     def __init__(self) -> None:
         super().__init__()
-    def generateSuccessfulStudents(self, count:int) -> list[StudentModel]:
+
+    def generate_successful_students(self, count: int) -> list[StudentModel]:
         students = []
         for _ in range(count):
-
             student = StudentModel(0,  # id
                                    str(random.uniform(0.0, 1.0)),  # name
                                    # primary_school_grade
@@ -57,10 +58,9 @@ class RandomStudentGeneratorIMPL(RandomStudentGenerator):
             students.append(student)
         return students
 
-    def generateFailureStudents(self, count:int) -> list[StudentModel]:
+    def generate_failure_students(self, count: int) -> list[StudentModel]:
         students = []
         for _ in range(count):
-
             student = StudentModel(0,  # id
                                    str(random.uniform(0.0, 1.0)),  # name
                                    # primary_school_grade
@@ -87,10 +87,9 @@ class RandomStudentGeneratorIMPL(RandomStudentGenerator):
             students.append(student)
         return students
 
-    def generateRandomStudents(self, count:int) -> list[StudentModel]:
+    def generate_random_students(self, count: int) -> list[StudentModel]:
         students = []
         for _ in range(count):
-
             student = StudentModel(0,  # id
                                    str(random.uniform(0.0, 1.0)),  # name
                                    # primary_school_grade

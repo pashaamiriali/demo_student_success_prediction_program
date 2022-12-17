@@ -1,26 +1,26 @@
-from infrastructure.infrastructure import DatabaseIMPL
-from repositories.student_repository import StudentRepositoryIMPL
+import numpy as np
+
 from core.network import Network
-from repositories.random_student_generator import RandomStudentGeneratorIMPL
-from repositories.network_repository import NetworkRepository
+from infrastructure.infrastructure import DatabaseIMPL
 from presentation.command_center import CommandCenterIMPL
 from presentation.command_operator import CommandOperator
-import numpy as np
+from repositories.network_repository import NetworkRepository
+from repositories.student_repository import StudentRepositoryIMPL
 
 
 def initialize_database() -> tuple:
     database = DatabaseIMPL('students_db.db')
     network_repo = NetworkRepository(database)
     network_repo.create_network_table()
-    
-    students_repo = StudentRepositoryIMPL(database)
-    students_repo.createStudentsTable()
 
-    return (network_repo, students_repo)
+    students_repo = StudentRepositoryIMPL(database)
+    students_repo.create_students_table()
+
+    return network_repo, students_repo
 
 
 def initialize_command_line(network_repo, students_repo):
-    network=Network()
+    network = Network()
     cc = CommandCenterIMPL(network_repo, students_repo, network)
     CommandOperator(cc)
 
@@ -39,9 +39,9 @@ def run_neural_network():
 
     training_input = np.array([[0.1, 0.2, 0.9, 0.1, 0.2, 0.9, 0.1, 0.2, 0.9, 0.1, ],
                                [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9,
-                                   0.9, 0.9, 0.9, ],
+                                0.9, 0.9, 0.9, ],
                                [0.9, 0.3, 0.9, 0.9, 0.3, 0.9, 0.9,
-                                   0.3, 0.9, 0.9, ],
+                                0.3, 0.9, 0.9, ],
                                [0.2, 0.9, 0.9, 0.2, 0.9, 0.9, 0.2, 0.9, 0.9, 0.2, ], ])
 
     training_outputs = np.array([[0, 1, 1, 0]]).T
@@ -65,7 +65,7 @@ def run_neural_network():
     i10 = str(input("Input 10: "))
 
     print('New input data: ', i1, i2, i3, i4,
-          i5, i6, i7, i8, i9, i10,)
+          i5, i6, i7, i8, i9, i10, )
     print('Output data: ')
     print(neural_network.think(
         np.array([i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, ])))

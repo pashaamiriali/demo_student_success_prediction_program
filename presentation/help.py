@@ -1,5 +1,5 @@
 
-class Help():
+class Help:
     @staticmethod
     def show_welcome():
         print("""

@@ -37,12 +37,42 @@ class CommandCenter(ABC):
         pass
 
     @abstractmethod
-    def find_student(self, id: int):
+    def find_student(self, key: int):
         pass
 
     @abstractmethod
     def predict_current_student_success(self):
         pass
+
+
+def print_student(student: StudentModel):
+    present_text = """
+        Student ID: {} Student Name: {}
+        Primary school grade: {}
+        Elementary school grade: {}
+        High school grade: {}
+        Present economic status: {}
+        Present political stress: {}
+        Student confidence: {}
+        Parents education: {}
+        Number of family members: {}
+        Respect for teacher: {}
+        Access to modern technology: {}
+        """.format(
+        student.id,
+        student.name,
+        student.primary_school_grade,
+        student.elementary_school_grade,
+        student.high_school_grade,
+        student.present_economic_status,
+        student.present_political_stress,
+        student.student_confidence,
+        student.parents_education,
+        student.number_of_family_members,
+        student.respect_for_teacher,
+        student.access_to_modern_technology,
+    )
+    print(present_text)
 
 
 class CommandCenterIMPL(CommandCenter):
@@ -63,13 +93,13 @@ class CommandCenterIMPL(CommandCenter):
 
     def reset_database(self):
         self.network_repo.drop_network_table()
-        self.students_repo.dropStudentsTable()
+        self.students_repo.drop_students_table()
 
     def create_new_student(self):
-        if(self.current_student != None):
+        if self.current_student is not None:
             confirm = str(input(
                 "There is an existing student, replace? Type Y for yes or N for no")).lower()
-            if(confirm != 'y'):
+            if confirm != 'y':
                 return
 
         name = str(input('Name: '))
@@ -104,37 +134,37 @@ class CommandCenterIMPL(CommandCenter):
         print('Current student is: {}'.format(self.current_student.name))
 
     def show_current_student(self):
-        if(type(self.current_student) is StudentModel):
-            self.__print_student(self.current_student)
+        if type(self.current_student) is StudentModel:
+            print_student(self.current_student)
         else:
             print('Currently no student is stored in memory. ')
 
     def remove_current_student(self):
-        if(self.current_student != None):
+        if self.current_student is not None:
             confirm = str(input(
                 "Remove the current student? Type Y for yes or N for no: ")).lower()
-            if(confirm != 'y'):
+            if confirm != 'y':
                 return
             self.current_student = None
         else:
             print('Currently no student is stored in memory.')
 
     def save_current_student(self):
-        if(self.current_student != None):
-            lastrowid = self.students_repo.saveStudentToDb(
+        if self.current_student is not None:
+            lastrowid = self.students_repo.save_student_to_db(
                 self.current_student)
             print(
                 "The student status is saved with the following id: \n {}".format(lastrowid))
         else:
             print('Currently no student is stored in memory.')
 
-    def find_student(self, id: int):
+    def find_student(self, key: int):
         try:
-            student = self.students_repo.findSingleStudent(id)
-            self.__print_student(student)
+            student = self.students_repo.find_single_student(key)
+            print_student(student)
             to_store = str(input(
                 'Store to memory? (existing student will be replaced) Type Y for yes and N for no: ')).lower()
-            if(to_store == "y"):
+            if to_store == "y":
                 self.current_student = student
                 print('Current student is: {}'.format(
                     self.current_student.name))
@@ -142,43 +172,16 @@ class CommandCenterIMPL(CommandCenter):
             print("No student with this ID is found.")
 
     def predict_current_student_success(self):
-        if(type(self.current_student) is StudentModel):
+        if type(self.current_student) is StudentModel:
             chance_of_success = self.network.think(
                 self.current_student.to_array())[0]
-            if(chance_of_success > 0.5):
+            if chance_of_success > 0.5:
                 print("This student will succeed with {}% chance.".format(
-                    (chance_of_success*100)))
+                    (chance_of_success * 100)))
             else:
                 print("This student will fail because it has {}% chance in success".format(
-                    (chance_of_success*100)))
+                    (chance_of_success * 100)))
         else:
-            print('There is no student stored in memory.\n type "create new student" to store one; then run "predict" to predict the state of the student.')
-
-    def __print_student(self, student: StudentModel):
-        present_text = """
-            Student ID: {} Student Name: {}
-            Primary school grade: {}
-            Elementary school grade: {}
-            High school grade: {}
-            Present economic status: {}
-            Present political stress: {}
-            Student confidence: {}
-            Parents education: {}
-            Number of family members: {}
-            Respect for teacher: {}
-            Access to modern technology: {}
-            """.format(
-            student.id,
-            student.name,
-            student.primary_school_grade,
-            student.elementary_school_grade,
-            student.high_school_grade,
-            student.present_economic_status,
-            student.present_political_stress,
-            student.student_confidence,
-            student.parents_education,
-            student.number_of_family_members,
-            student.respect_for_teacher,
-            student.access_to_modern_technology,
-        )
-        print(present_text)
+            print(
+                'There is no student stored in memory.\n type "create new student" to store one; then run "predict" '
+                'to predict the state of the student.')

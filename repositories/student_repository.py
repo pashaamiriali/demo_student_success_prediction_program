@@ -1,33 +1,33 @@
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
 from core.student_model import StudentModel
 from infrastructure.infrastructure import Database, SQLTableData
 from core.exceptions import NoStudentFoundException
 
 
 class StudentRepository(ABC):
-    
-    @abstractclassmethod
-    def saveStudentToDb(self, student: StudentModel) -> int:  # type: ignore
+
+    @abstractmethod
+    def save_student_to_db(self, student: StudentModel) -> int:  # type: ignore
         pass
 
-    @abstractclassmethod
-    def findAllStudents(self) -> list[StudentModel]:  # type: ignore
+    @abstractmethod
+    def find_all_students(self) -> list[StudentModel]:  # type: ignore
         pass
 
-    @abstractclassmethod
-    def findSingleStudent(self, key: int) -> StudentModel:  # type: ignore
+    @abstractmethod
+    def find_single_student(self, key: int) -> StudentModel:  # type: ignore
         pass
 
-    @abstractclassmethod
-    def deleteStudent(self, key: int):
+    @abstractmethod
+    def delete_student(self, key: int):
         pass
 
-    @abstractclassmethod
-    def createStudentsTable(self):
+    @abstractmethod
+    def create_students_table(self):
         pass
 
-    @abstractclassmethod
-    def dropStudentsTable(self):
+    @abstractmethod
+    def drop_students_table(self):
         pass
 
 
@@ -36,18 +36,19 @@ class StudentRepositoryIMPL(StudentRepository):
         super().__init__()
         self.database = database
 
-    def saveStudentToDb(self, student: StudentModel)->int:
+    def save_student_to_db(self, student: StudentModel) -> int:
         number_of_rows_found = len(self.database.find(
             StudentModel.table_name, student.id).fetchall())
-        if(number_of_rows_found > 0):
+        if number_of_rows_found > 0:
             self.database.update(StudentModel.table_name,
-                                 SQLTableData(student.to_data_columns()), student.id)
+                                 student.to_data_columns(), student.id)
             return student.id
         else:
-            lastrowid=self.database.insert(StudentModel.table_name,
-                                 SQLTableData(student.to_data_columns()),)
+            lastrowid = self.database.insert(StudentModel.table_name,
+                                             SQLTableData(student.to_data_columns()), )
             return lastrowid
-    def findAllStudents(self) -> list[StudentModel]:
+
+    def find_all_students(self) -> list[StudentModel]:
         data = self.database.read(StudentModel.table_name).fetchall()
         return_items = []
         for item in data:
@@ -67,9 +68,9 @@ class StudentRepositoryIMPL(StudentRepository):
             ))
         return return_items
 
-    def findSingleStudent(self, key: int) -> StudentModel:
+    def find_single_student(self, key: int) -> StudentModel:
         data = self.database.find(StudentModel.table_name, key).fetchall()
-        if(len(data)<1):
+        if len(data) < 1:
             raise NoStudentFoundException('')
         item = data[0]
         return StudentModel(
@@ -87,12 +88,12 @@ class StudentRepositoryIMPL(StudentRepository):
             item[11],
         )
 
-    def deleteStudent(self, key: int):
+    def delete_student(self, key: int):
         self.database.delete(StudentModel.table_name, key)
 
-    def createStudentsTable(self):
+    def create_students_table(self):
         student_skeleton = StudentModel.to_table()
         self.database.create_table(student_skeleton[0], student_skeleton[1])
 
-    def dropStudentsTable(self):
+    def drop_students_table(self):
         self.database.drop_table(StudentModel.table_name)

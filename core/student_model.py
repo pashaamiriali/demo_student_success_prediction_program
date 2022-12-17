@@ -1,10 +1,11 @@
-from infrastructure.infrastructure import Column, SQLDataType, DataColumn, SQLDataType
 import numpy as np
 
+from infrastructure.infrastructure import Column, DataColumn, SQLDataType
 
-class StudentModel():
+
+class StudentModel:
     def __init__(self,
-                 id: int,
+                 key: int,
                  name,
                  primary_school_grade,
                  elementary_school_grade,
@@ -17,7 +18,7 @@ class StudentModel():
                  respect_for_teacher,
                  access_to_modern_technology,
                  ) -> None:
-        self.id = id
+        self.id = key
         self.name = name
         self.primary_school_grade = primary_school_grade
         self.elementary_school_grade = elementary_school_grade
@@ -68,7 +69,9 @@ class StudentModel():
             self.respect_for_teacher,
             self.access_to_modern_technology,
         ])
+
     table_name = 'students'
+
     def __str__(self) -> str:
         return """
             student id: {}                  student name: {}
@@ -83,7 +86,7 @@ class StudentModel():
                     respect_for_teacher: {}
                     access_to_modern_technology: {}
     """.format(
-        self.id, self.name, 
+            self.id, self.name,
             self.primary_school_grade,
             self.elementary_school_grade,
             self.high_school_grade,
@@ -94,10 +97,10 @@ class StudentModel():
             self.number_of_family_members,
             self.respect_for_teacher,
             self.access_to_modern_technology,
-    )
+        )
+
     @staticmethod
     def to_table() -> tuple[str, list[Column]]:
-
         return (StudentModel.table_name, [
             Column('name', SQLDataType.real),
             Column('primary_school_grade', SQLDataType.real),
