@@ -44,6 +44,8 @@ class CommandOperator:
             self.__auto_train()
         elif command == 'show relationships':
             self.__show_relationships()
+        elif command == 'save network status':
+            self.__save_network_status()
         else:
             print("No such command found.")
             print('Type "help" or "h" to see instructions for using the program.')
@@ -121,3 +123,7 @@ class CommandOperator:
 
     def __show_relationships(self):
         self.command_center.show_relationships()
+
+    def __save_network_status(self):
+        self.command_center.save_network_status()
+        print("Network status saved.")

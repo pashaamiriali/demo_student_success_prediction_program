@@ -68,6 +68,10 @@ class CommandCenter(ABC):
     def show_relationships(self, ):
         pass
 
+    @abstractmethod
+    def save_network_status(self, ):
+        pass
+
 
 def print_student(student: StudentModel):
     present_text = """
@@ -101,21 +105,16 @@ def print_student(student: StudentModel):
 
 def get_student_from_input() -> StudentModel:
     name = str(input('Name: '))
-    primary_school_grade = float(str(input('Primary school grade: ')))
-    elementary_school_grade = float(
-        str(input('Elementary school grade: ')))
-    high_school_grade = float(str(input('High school grade: ')))
-    present_economic_status = float(
-        str(input('Present economic status: ')))
-    present_political_stress = float(
-        str(input('Present political stress: ')))
-    student_confidence = float(str(input('Student confidence: ')))
-    parents_education = float(str(input('Parents education: ')))
-    number_of_family_members = float(
-        str(input('Number of family members: ')))
-    respect_for_teacher = float(str(input('Respect for teacher: ')))
-    access_to_modern_technology = float(
-        str(input('Access to modern technology: ')))
+    primary_school_grade = get_float_input('Primary school grade: ', (0, 10), 10)
+    elementary_school_grade = get_float_input('Elementary school grade: ', (0, 10), 10)
+    high_school_grade = get_float_input('High school grade: ', (0, 10), 10)
+    present_economic_status = get_float_input('Present economic status: ', (0, 10), 10)
+    present_political_stress = get_float_input('Present political stress: ', (0, 10), 10)
+    student_confidence = get_float_input('Student confidence: ', (0, 10), 10)
+    parents_education = get_float_input('Parents education: ', (0, 10), 10)
+    number_of_family_members = get_float_input('Number of family members: ', (0, 10), 10)
+    respect_for_teacher = get_float_input('Respect for teacher: ', (0, 10), 10)
+    access_to_modern_technology = get_float_input('Access to modern technology: ', (0, 10), 10)
     return StudentModel(0, name,
                         primary_school_grade,
                         elementary_school_grade,
@@ -130,6 +129,20 @@ def get_student_from_input() -> StudentModel:
                         )
 
 
+def get_float_input(prompt: str, between: tuple, divide_by: float) -> float:
+    inp = str(input(prompt))
+    try:
+        number = float(inp)
+        if number <= between[0] or number >= between[1]:
+            print(f'Enter a number between {between[0]} and {between[1]} (inclusive)')
+            return get_float_input(prompt, between, divide_by)
+        else:
+            return number / divide_by
+    except ValueError:
+        print('Bad format enter the value again.')
+        return get_float_input(prompt, between, divide_by)
+
+
 class CommandCenterIMPL(CommandCenter):
 
     def __init__(self, network_repo: NetworkRepository, students_repo: StudentRepository, network: Network,
@@ -139,6 +152,7 @@ class CommandCenterIMPL(CommandCenter):
         self.students_repo = students_repo
         self.network = network
         self.random_student_generator = random_student_generator
+        self.current_performed_epochs = 0
 
     def exit(self):
         exit()
@@ -222,18 +236,14 @@ class CommandCenterIMPL(CommandCenter):
 
     def train(self, students: array, success_rates: array, number_of_epochs: int):
         self.network.train(students, success_rates, number_of_epochs)
-
+        self.current_performed_epochs += number_of_epochs
         self.__show_synaptic_weights()
 
     def auto_train(self, number_of_students: int, number_of_epochs: int):
         print('Training...')
         rand_students = self.random_student_generator.generate_successful_students(number_of_students)
         self.__train_with_given_students(rand_students, number_of_epochs, 0.9)
-
-        # print('Training for failure...')
-        # rand_students = self.random_student_generator.generate_failure_students(number_of_students)
-        # self.__train_with_given_students(rand_students, number_of_epochs, 0.0)
-
+        self.current_performed_epochs += number_of_epochs * number_of_students
         self.__show_synaptic_weights()
 
     def __train_with_given_students(self, rand_students, number_of_epochs, success_rate):
@@ -277,3 +287,6 @@ class CommandCenterIMPL(CommandCenter):
 
     def show_relationships(self):
         self.__show_synaptic_weights()
+
+    def save_network_status(self):
+        self.save_current_network_status(self.current_performed_epochs)

@@ -78,4 +78,6 @@ successful a competency based education environment.
         Command: show relationships -> Shows the relationship between the involved factors
         and the success and failure of a student.
         
+        Command: save network status -> Saves the current state of the network synaptic weights.
+        
     """
